@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  analytics:
+    build: 
+      context: ./analytics
+      dockerfile: apifast.Dockerfile
+    depends_on: 
+      - db
+    container_name: analytics
+    ports:
+      - ${ANALYTICS_CONTAINER_PORT}:${ANALYTICS_HOST_PORT}
+    volumes:
+      - ./analytics:/analytics
+    environment:
+      ANALYTICS_HOST_NAME: ${ANALYTICS_HOST_NAME}
+      ANALYTICS_CONTAINER_PORR: ${ANALYTICS_CONTAINER_PORT}
+      ANALYTICS_HOST_PORT: ${ANALYTICS_HOST_PORT}
+
+  db:
+    image: mysql
+    restart: always
+    container_name: mysql-container
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+volumes:
+  db:
+  
