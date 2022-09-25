@@ -1,21 +1,6 @@
 version: '3.9'
 
 services:
-  analytics:
-    build: 
-      context: ./analytics
-      dockerfile: apifast.Dockerfile
-    depends_on: 
-      - db
-    container_name: analytics
-    ports:
-      - ${ANALYTICS_CONTAINER_PORT}:${ANALYTICS_HOST_PORT}
-    volumes:
-      - ./analytics:/analytics
-    environment:
-      ANALYTICS_HOST_NAME: ${ANALYTICS_HOST_NAME}
-      ANALYTICS_CONTAINER_PORR: ${ANALYTICS_CONTAINER_PORT}
-      ANALYTICS_HOST_PORT: ${ANALYTICS_HOST_PORT}
 
   db:
     image: mysql
