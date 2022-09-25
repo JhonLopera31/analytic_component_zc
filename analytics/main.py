@@ -1,13 +1,13 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from configs import APIREST_PORT,APIREST_HOST, apirest_configurations
+from configs import APIREST_PORT,APIREST_HOST, APIREST_CONFIGURATIONS
 from modules.apirest_manager import ApiRestManager
 
 
 def app() -> FastAPI:
     app = FastAPI()
-    app.add_middleware(CORSMiddleware,**apirest_configurations)
+    app.add_middleware(CORSMiddleware,**APIREST_CONFIGURATIONS)
     ApiRestManager.setup()
     app.include_router(ApiRestManager.get_router())
     return app
