@@ -21,7 +21,8 @@ class AnalyticEndPoints:
             "method": request.method
         }
         return message
-
+    
+# ::::::......:::::: Getter Methods ::::::......::::::
     @classmethod
     def get_index_endpoint(cls):
         params = {

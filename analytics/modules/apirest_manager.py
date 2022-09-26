@@ -14,7 +14,7 @@ class ApiRestManager:
     def setup(cls) -> None:
         print(":::..::: Starting Setup for APIREST of Analytic component :::..:::")
         cls._setup_router()
-        cls.get_hexagon_centers()
+        cls._setup_hexagons_file()
 
     @classmethod
     def _setup_router(cls) -> None:
@@ -26,7 +26,7 @@ class ApiRestManager:
         print("Done..")
 
     @classmethod
-    def get_hexagon_centers(cls):
+    def _setup_hexagons_file(cls):
         print("* Getting central coordinates of the hexagons")
 
         if not Path.exists(Path(configs.hexagons_centers_csv_file_path)):
