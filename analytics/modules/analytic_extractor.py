@@ -14,9 +14,7 @@ class AnalyticExtractor:
     _cluster_coordinates = None
 
     @classmethod
-    def extract_location_data(
-        cls, cluster_location: dict, radius: int | float
-    ) -> DataFrame:
+    def extract_location_data(cls, cluster_location: dict, radius: int | float) -> DataFrame:
         """This method is used to extract the coordinates and dates around the cluster
         location and within a defined radius.
 
