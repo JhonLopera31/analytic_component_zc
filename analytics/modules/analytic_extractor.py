@@ -12,10 +12,12 @@ import queries
 class AnalyticExtractor:
     _db_manager = DBManager("mysql_db_local")
     _cluster_coordinates = None
-    
+
     @classmethod
-    def extract_location_data(cls, cluster_location: dict, radius: int | float) -> DataFrame:
-        """This method is used to extract the coordinates and dates around the cluster 
+    def extract_location_data(
+        cls, cluster_location: dict, radius: int | float
+    ) -> DataFrame:
+        """This method is used to extract the coordinates and dates around the cluster
         location and within a defined radius.
 
         :param cluster_location: longitud and latitud of a cluster in the following format:
@@ -30,33 +32,28 @@ class AnalyticExtractor:
         params = {
             "radius": radius,
             "lng": cluster_location.get("lng", 0),
-            "lat": cluster_location.get("lat", 0)
+            "lat": cluster_location.get("lat", 0),
         }
         query = queries.get_locations_by_cluster.format(**params)
         df = cls._db_manager.select_as_df(query)
         return df
-    
-    
-    @classmethod
-    def extract_cluster_coordinates(cls, extraction_method:str="apirest"):
-        print("* Getting cluster's coordinates")
 
-        if extraction_method == "local":
-            if not Path.exists(Path(CLUSTER_DATA_CSV_PATH)):
+    @classmethod
+    def extract_cluster_coordinates(cls, extraction_method: str = "apirest"):
+        print("* Getting cluster's coordinates")
+        if not Path.exists(Path(CLUSTER_DATA_CSV_PATH)):
+            if extraction_method == "local":
                 cls._extract_coordinates_from_json_file()
+            elif extraction_method == "apirest":
+                cls._extract_coordinates_from_apirest()
             else:
-                print(f"-- Loading data from {CLUSTER_DATA_CSV_PATH}")
-                cls._cluster_coordinates = read_csv(CLUSTER_DATA_CSV_PATH, sep=",")
-            print("Extraction finished succesfully...")
-        
-        elif extraction_method == "apirest":
-            # Apirest extraction logic
-            pass
-        
+                raise Exception("You must provide a correct extraction method")
+
         else:
-            raise Exception("You must provide a correct extraction method")
-        
-    
+            print(f"-- Loading data from {CLUSTER_DATA_CSV_PATH}")
+            cls._cluster_coordinates = read_csv(CLUSTER_DATA_CSV_PATH, sep=",")
+            print("Extraction finished succesfully...")
+
     @classmethod
     def _extract_coordinates_from_json_file(cls):
         print("-- Generating data from json file (Temporal method)")
@@ -64,17 +61,20 @@ class AnalyticExtractor:
 
         data = {
             "lat": [x.get("properties").get("center")[0] for x in json_data],
-            "lng": [x.get("properties").get("center")[1] for x in json_data]
+            "lng": [x.get("properties").get("center")[1] for x in json_data],
         }
-
-        cls._cluster_coordinates = DataFrame(data)
 
         save_path = CLUSTER_DATA_CSV_PATH
         create_folder_if_not_exist(Path(save_path).parent)
         print(f"-- Saving data in {save_path}")
-        cls._hexagons_center_coordinates.to_csv(save_path, sep=",", index=False)
-        
-    
+        cls._cluster_coordinates = DataFrame(data)
+        cls._cluster_coordinates.to_csv(save_path, sep=",", index=False)
+
+    @classmethod
+    def _extract_coordinates_from_apirest(cls):
+        # Introduce some logic
+        pass
+
     @classmethod
     def get_cluster_coordinates(cls):
         return cls._cluster_coordinates
