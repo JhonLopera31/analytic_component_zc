@@ -23,9 +23,12 @@ APIREST_CONFIGURATIONS = {
 
 
 # ::::::....... Configurations to obtain data (Temporary Methods)  ......::::::
-hexagons_geometry_data_file_path = "./data/json_data\hexagonsGeometryData.json"
-hexagons_centers_csv_file_path = "./data/csv_data/hexagons_centers.csv"
+CLUSTER_DATA_JSON_PATH = "./data/json_data\hexagonsGeometryData.json"
+CLUSTER_DATA_CSV_PATH = "./data/csv_data/hexagons_centers.csv"
 
 DB_CONFIGS = {
     "mysql_db_local": {"engine":"mysql", "credentials_name": "MYSQL_DB_LOCAL"}
 }
+
+
+ANALYTIC_PROCESSOR = {"run_forecasting"}

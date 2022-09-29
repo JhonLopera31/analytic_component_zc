@@ -16,7 +16,6 @@ def create_folder_if_not_exist(path: Path):
 
 
 def read_json_file_from(path: str) -> list:
-    file_object = open(path)
-    json_data = load(file_object)
-    file_object.close()
+    with open(path, "r") as file_object:
+        json_data = load(file_object)
     return json_data
