@@ -1,10 +1,6 @@
 from fastapi import APIRouter
-from analytics.modules.analytic_extractor import AnalyticExtractor
-from modules.apirest_endpoints import AnalyticEndPoints
+from modules.apirest.apirest_endpoints import AnalyticEndPoints
 from utils.utility_functions import create_folder_if_not_exist, read_json_file_from
-from pandas import DataFrame, read_csv
-from pathlib import Path
-import configs
 
 
 class ApiRestManager:

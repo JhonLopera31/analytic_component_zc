@@ -1,0 +1,27 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  json:
+    format: "[%(asctime)s] - %(levelname)s - %(name)s: %(message)s"
+  plaintext:
+    format: "[%(asctime)s] - %(levelname)s - %(name)s: %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: plaintext
+    level: DEBUG
+    stream: ext://sys.stdout
+  logfile:
+    class: logging.handlers.RotatingFileHandler
+    formatter: plaintext
+    level: DEBUG
+    filename: logfile.log
+    maxBytes: 1000000
+    backupCount: 3
+root:
+  level: DEBUG
+  propagate: False
+  handlers: [console, logfile]
+loggers:
+  uvicorn: 
+    level: INFO

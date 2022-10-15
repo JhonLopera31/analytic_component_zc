@@ -1,13 +1,14 @@
 from pandas import DataFrame
-from modules.db_manager import DBManager
+from modules.repository.db_manager import DBManager
 from utils.utility_functions import read_json_file_from
 from utils.utility_functions import read_json_file_from
 from utils.utility_functions import create_folder_if_not_exist
 from pandas import DataFrame, read_csv
 from pathlib import Path
-from configs import CLUSTER_DATA_JSON_PATH, CLUSTER_DATA_CSV_PATH
-import queries
-
+from config.settings import CLUSTER_DATA_JSON_PATH
+from config.settings import CLUSTER_DATA_CSV_PATH
+from modules.etls import queries
+from modules.logs.loggers import GeneralLogger
 
 class AnalyticExtractor:
     _db_manager = DBManager("mysql_db_local")
@@ -38,7 +39,7 @@ class AnalyticExtractor:
 
     @classmethod
     def extract_cluster_coordinates(cls, extraction_method: str = "apirest"):
-        print("* Getting cluster's coordinates")
+        GeneralLogger.put_log("* Getting cluster's coordinates")
         if not Path.exists(Path(CLUSTER_DATA_CSV_PATH)):
             if extraction_method == "local":
                 cls._extract_coordinates_from_json_file()

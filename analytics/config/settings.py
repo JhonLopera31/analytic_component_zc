@@ -1,10 +1,13 @@
 from dotenv import load_dotenv
-from os import environ, getcwd, getenv
+from os import getcwd, getenv
 from os.path import join, dirname
+from utils.settings_yaml import load_settings
 
-load_dotenv(join(dirname(getcwd()), ".env"))
+
+LOGGING_SETTINGS = load_settings("config")
 
 # ::::::...... APIREST configurations ......::::::
+load_dotenv(join(dirname(getcwd()), ".env"))
 APIREST_HOST = getenv("ANALYTICS_HOST_NAME")
 APIREST_PORT = int(getenv("ANALYTICS_HOST_PORT"))
 BACKEND_PORT = int(getenv("BACKEND_HOST_PORT"))
@@ -20,7 +23,6 @@ APIREST_CONFIGURATIONS = {
     "allow_methods": ["*"],
     "allow_headers": ["*"]
 }
-
 
 # ::::::....... Configurations to obtain data (Temporary Methods)  ......::::::
 CLUSTER_DATA_JSON_PATH = "./data/json_data\hexagonsGeometryData.json"

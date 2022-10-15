@@ -1,6 +1,7 @@
 from utils.utility_functions import json_message
 from fastapi import Request
 from utils.models import Location
+from modules.etls.managers import AnalyticManager
 
 
 class AnalyticEndPoints:
@@ -10,8 +11,9 @@ class AnalyticEndPoints:
         return json_message("APIREST is working...")
 
     @classmethod
-    async def _forecasting_endpoint(cls, location: Location):
-        return json_message("This is not ready yet.")
+    async def _forecasting_endpoint(cls,request: Request):
+        json_content= await request.json()
+        return json_content
 
     @classmethod
     async def _test_endpoint(cls, request: Request):

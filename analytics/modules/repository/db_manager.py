@@ -2,7 +2,7 @@ from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from pandas import DataFrame, read_sql_query
-from analytics.configs import DB_CONFIGS
+from config.settings import DB_CONFIGS
 
 
 class DBManager:
