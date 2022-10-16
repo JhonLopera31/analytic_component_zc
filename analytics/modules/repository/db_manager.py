@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from pandas import DataFrame, read_sql_query
 from config.settings import DB_CONFIGS
+from pymongo import MongoClient
 
 
 class DBManager:
@@ -10,17 +11,22 @@ class DBManager:
 
     def __init__(self, db_name: str) -> None:
         engine_name = DB_CONFIGS.get(db_name).get("engine")
-        credentials = self._get_credentials(db_name)
 
         if engine_name == "mysql":
-            url = URL.create(drivername="mysql+pymysql", **credentials)
+            url = URL.create(drivername="mysql+pymysql", **self._get_credentials(db_name))
+            self._engine = create_engine(url)
 
         elif engine_name == "posgresql":
-            url = URL.create(drivername="posgresql+pymysql", **credentials)
+            url = URL.create(drivername="posgresql+psycopg", **self._get_credentials(db_name))
+            self._engine = create_engine(url)
+        
+        elif engine_name=="mongodb":
+            self._engine = MongoClient(getenv("MONGO_DB_URL"))
 
-        self._engine = create_engine(url)
-
-
+        else:
+            raise ValueError ("You must provide a valid database engine")
+        
+        
     def _get_credentials(self, db_name: str) -> dict:
         """
         Get database credentials from the environment variables

@@ -20,7 +20,7 @@ handlers:
     backupCount: 3
 root:
   level: DEBUG
-  propagate: False
+  propagate: True
   handlers: [console, logfile]
 loggers:
   uvicorn: 
