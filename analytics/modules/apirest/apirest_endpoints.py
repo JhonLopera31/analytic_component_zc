@@ -1,18 +1,45 @@
 from utils.utility_functions import json_message
 from fastapi import Request
-from utils.models import Location
 from modules.etls.managers import AnalyticManager
 
 
 class AnalyticEndPoints:
-
     @classmethod
     async def _index_endpoint(cls):
         return json_message("APIREST is working...")
 
     @classmethod
-    async def _forecasting_endpoint(cls,request: Request):
-        json_content= await request.json()
+    async def _forecasting_endpoint(cls, request: Request) -> dict:
+        """
+        This method is used to build a predictive model with historical data from a single cluster
+        The data will be sent in a post request with the following format:
+
+        {
+            data: [
+                    {date: str (dd/mm/yyyy), counts: array},
+                    {date: str (dd/mm/yyyy), counts: array},
+                    {date: str (dd/mm/yyyy), counts: array},
+                                .
+                                .
+                                .
+                    {date: str (dd/mm/yyyy), counts: array},
+            ]
+        }
+
+        Counts is an array of length 24, and represents the number of incidents in a one hour interval.
+        For example, the first position represent the counts for the interval 00:00 to 00:59, second position
+        represent the counts for the interval from 01:00 to 01:59 and continues with the same logic up to 23:59
+
+        :param request: data in json format sent in a post request
+        :return: dictionary with the path in a AWS/Firebase bucket containing the files with the predictive model
+        """
+        json_content = await request.json()
+
+        # TODO: Set json content in a dataframe
+        # TODO: Create forecasting methods (define other class)
+        # TODO: Create client/connection with AWS or firebase
+        # TODO: Create method to save the model files
+        # TODO: Create method for extract files from bucket
         return json_content
 
     @classmethod
@@ -20,18 +47,29 @@ class AnalyticEndPoints:
         message = {
             "message": "Testing apirest",
             "host": request.client.host,
-            "method": request.method
+            "method": request.method,
         }
         return message
-    
-# ::::::......:::::: Getter Methods ::::::......::::::
+
+    @classmethod
+    async def _forecasting_test_endpoint(cls, request: Request) -> dict:
+        """
+        This method will be used to test predictive models by obtaining data directly from the database. Thus,
+        the data will not be obtained from a post-type request, but from a connection to the databases.
+        :param request: json with information about what database will be used and which cluster
+        :type request: Request
+        :return: _description_
+        :rtype: dict
+        """
+        # TODO: use etl method to get data from mysql database (try to get data by day and group bu hour)
+        # TODO: Create methods to get the data directly from a mongo db database
+        # TODO: Build a class to create the predictive models
+        pass
+
+    # ::::::......:::::: Getter Methods ::::::......::::::
     @classmethod
     def get_index_endpoint(cls):
-        params = {
-            "path": "/",
-            "endpoint": cls._index_endpoint,
-            "methods": ["GET"]
-        }
+        params = {"path": "/", "endpoint": cls._index_endpoint, "methods": ["GET"]}
         return params
 
     @classmethod
@@ -39,7 +77,7 @@ class AnalyticEndPoints:
         params = {
             "path": "/forecasting",
             "endpoint": cls._forecasting_endpoint,
-            "methods": ["POST"]
+            "methods": ["POST"],
         }
         return params
 
@@ -48,6 +86,6 @@ class AnalyticEndPoints:
         params = {
             "path": "/test_endpoint",
             "endpoint": cls._test_endpoint,
-            "methods": ["GET"]
+            "methods": ["GET"],
         }
         return params

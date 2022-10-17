@@ -1,7 +1,8 @@
 from config.settings import ANALYTIC_PROCESSOR
+from interfaces.manager import Manager
 from modules.etls.extractors import AnalyticExtractor
 
-class AnalyticManager:
+class AnalyticManager(Manager):
     
     @classmethod
     def perform_process(cls, process_function: str):
@@ -14,3 +15,6 @@ class AnalyticManager:
     def run_forecasting(cls):
         print("Test is working")
         
+    @classmethod
+    def run_forecasting_test(cls):
+        print("Test is working")
