@@ -1,19 +1,18 @@
-import uvicorn
+from uvicorn import run
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from modules.logs.loggers import GeneralLogger
-from config.settings import APIREST_PORT,APIREST_HOST, APIREST_CONFIGURATIONS
+from config.settings import APIREST_PORT, APIREST_HOST
 from modules.apirest.apirest_manager import ApiRestManager
+from dotenv import load_dotenv
+from os import getenv
 
-GeneralLogger.setup_logger("Automatic_Medispan_ETL")
+load_dotenv(".env")
+
 
 def app() -> FastAPI:
-    app = FastAPI()
-    app.add_middleware(CORSMiddleware,**APIREST_CONFIGURATIONS)
-    ApiRestManager.setup()
-    app.include_router(ApiRestManager.get_router())
-    return app
+    GeneralLogger.setup_logger(f"Analityc component {getenv('EXECUTION_ENV')}")
+    return ApiRestManager.setup()
 
 if __name__ == "__main__":  
-    uvicorn.run("main:app", port=APIREST_PORT,host=APIREST_HOST, reload=True, factory=True) 
-
+    run("main:app", port=int(APIREST_PORT),host=APIREST_HOST, reload=True, factory=True)
+ 

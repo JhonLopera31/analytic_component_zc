@@ -1,11 +1,12 @@
 from utils.utility_functions import json_message
 from fastapi import Request
-from modules.etls.managers import AnalyticManager
-
+from modules.logs.loggers import GeneralLogger
+from modules.forecasting.manager import TimeForecastingManager
 
 class AnalyticEndPoints:
     @classmethod
     async def _index_endpoint(cls):
+        GeneralLogger.put_log("APIREST is working...")
         return json_message("APIREST is working...")
 
     @classmethod
@@ -13,34 +14,35 @@ class AnalyticEndPoints:
         """
         This method is used to build a predictive model with historical data from a single cluster
         The data will be sent in a post request with the following format:
-
-        {
-            data: [
-                    {date: str (dd/mm/yyyy), counts: array},
-                    {date: str (dd/mm/yyyy), counts: array},
-                    {date: str (dd/mm/yyyy), counts: array},
-                                .
-                                .
-                                .
-                    {date: str (dd/mm/yyyy), counts: array},
-            ]
-        }
+        :param request: data in json format sent in a post request
+        :return: dictionary with the path in a AWS/Firebase bucket containing the files with the predictive model
+        
+        Example: 
+            {
+                data: [
+                        {date: str (dd/mm/yyyy), counts: array},
+                        {date: str (dd/mm/yyyy), counts: array},
+                        {date: str (dd/mm/yyyy), counts: array},
+                                    .
+                                    .
+                                    .
+                        {date: str (dd/mm/yyyy), counts: array},
+                ]
+            }
 
         Counts is an array of length 24, and represents the number of incidents in a one hour interval.
         For example, the first position represent the counts for the interval 00:00 to 00:59, second position
         represent the counts for the interval from 01:00 to 01:59 and continues with the same logic up to 23:59
-
-        :param request: data in json format sent in a post request
-        :return: dictionary with the path in a AWS/Firebase bucket containing the files with the predictive model
+        
         """
-        json_content = await request.json()
-
-        # TODO: Set json content in a dataframe
-        # TODO: Create forecasting methods (define other class)
-        # TODO: Create client/connection with AWS or firebase
-        # TODO: Create method to save the model files
-        # TODO: Create method for extract files from bucket
-        return json_content
+ 
+        execution_parameters = {
+            "process_function": "build_predictive_model",
+            "json_content": await request.json()
+        }
+        
+        result = TimeForecastingManager.perform_process(execution_parameters)
+        return result
 
     @classmethod
     async def _test_endpoint(cls, request: Request):

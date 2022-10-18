@@ -11,8 +11,8 @@ LOGGING_SETTINGS = load_settings("config")
 
 # ::::::...... APIREST configurations ......::::::
 APIREST_HOST = getenv("ANALYTICS_HOST_NAME")
-APIREST_PORT = int(getenv("ANALYTICS_HOST_PORT"))
-BACKEND_PORT = int(getenv("BACKEND_HOST_PORT"))
+APIREST_PORT = getenv("ANALYTICS_HOST_PORT")
+BACKEND_PORT = getenv("BACKEND_HOST_PORT")
 ALLOWED_ORIGINS = {
     f"http://{APIREST_HOST}",
     f"http://{BACKEND_PORT}:8080"

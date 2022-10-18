@@ -1,25 +1,27 @@
 from fastapi import APIRouter
 from modules.apirest.apirest_endpoints import AnalyticEndPoints
-from utils.utility_functions import create_folder_if_not_exist, read_json_file_from
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from config.settings import APIREST_CONFIGURATIONS
+from modules.logs.loggers import GeneralLogger
 
 
 class ApiRestManager:
-    _router = None
 
     @classmethod
-    def setup(cls) -> None:
-        print(":::..::: Starting Setup for APIREST of Analytic component :::..:::")
-        cls._setup_router()
-
+    def setup(cls) -> FastAPI:
+        GeneralLogger.put_log("::::.... Starting APIREST setup (Analytic component) .....::::")
+        app = FastAPI()
+        app.include_router(cls._setup_router())  
+        app.add_middleware(CORSMiddleware,**APIREST_CONFIGURATIONS)
+        return app
+        
+             
     @classmethod
-    def _setup_router(cls) -> None:
-        print("* Adding all endpoints to 'router' attribute")
-        cls._router = APIRouter()
-        cls._router.add_api_route(**AnalyticEndPoints.get_index_endpoint())
-        cls._router.add_api_route(**AnalyticEndPoints.get_forecasting_endpoint())
-        cls._router.add_api_route(**AnalyticEndPoints.get_test_endpoint())
-        print("Done..")
-
-    @classmethod
-    def get_router(cls):
-        return cls._router
+    def _setup_router(cls) -> APIRouter:
+        GeneralLogger.put_log("* Adding all endpoints to a router class")
+        router = APIRouter()
+        router.add_api_route(**AnalyticEndPoints.get_index_endpoint())
+        router.add_api_route(**AnalyticEndPoints.get_forecasting_endpoint())
+        router.add_api_route(**AnalyticEndPoints.get_test_endpoint())
+        return router

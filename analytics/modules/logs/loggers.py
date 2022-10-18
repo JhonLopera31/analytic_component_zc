@@ -1,16 +1,14 @@
-import logging.config
+from logging.config import dictConfig
 from logging import getLogger
-from logging import Logger
 from config.settings import LOGGING_SETTINGS
 
 
 class GeneralLogger:
-
-    _logger: Logger = None
+    _logger = None
 
     @classmethod
     def setup_logger(cls, log_stream_name):
-        logging.config.dictConfig(LOGGING_SETTINGS)
+        dictConfig(LOGGING_SETTINGS)
         cls._logger = getLogger(log_stream_name)
 
     @classmethod
