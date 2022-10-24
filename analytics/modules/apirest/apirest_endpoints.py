@@ -33,7 +33,6 @@ class AnalyticEndPoints:
         Counts is an array of length 24, and represents the number of incidents in a one hour interval.
         For example, the first position represent the counts for the interval 00:00 to 00:59, second position
         represent the counts for the interval from 01:00 to 01:59 and continues with the same logic up to 23:59
-        
         """
  
         execution_parameters = {
@@ -50,7 +49,7 @@ class AnalyticEndPoints:
             "message": "Testing apirest",
             "host": request.client.host,
             "method": request.method,
-        }
+        } 
         return message
 
     @classmethod
