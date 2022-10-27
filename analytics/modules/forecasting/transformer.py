@@ -4,6 +4,6 @@ from modules.logs.loggers import GeneralLogger
 class TimeForecastingTransformer:
 
     @classmethod
-    def DummyTransformation(data: DataFrame) -> DataFrame:
+    def DummyTransformation(cls,data: DataFrame) -> DataFrame:
         GeneralLogger.put_log("Dummy transformation")
         return data

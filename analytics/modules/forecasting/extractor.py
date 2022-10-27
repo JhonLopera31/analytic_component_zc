@@ -1,4 +1,4 @@
-import queries
+from modules.forecasting import queries
 from pandas import DataFrame
 from modules.logs.loggers import GeneralLogger
 from modules.repository.db_manager import DBManager

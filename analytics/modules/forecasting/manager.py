@@ -4,7 +4,6 @@ from modules.forecasting.extractor import TimeForecastingExtractor
 from modules.forecasting.transformer import TimeForecastingTransformer
 from modules.forecasting.trainer import TimeForecastingTrainer
 from modules.forecasting.loader import TimeForecastingLoader
-from config.settings import FIREBASE_FORECASTING_FOLDER
 
 
 class TimeForecastingManager(Manager):
@@ -12,7 +11,16 @@ class TimeForecastingManager(Manager):
     _execution_parameters = None
     
     @classmethod
-    def perform_process(cls, execution_parameters: dict):   
+    def perform_process(cls, execution_parameters: dict) -> dict:
+        """Perform process methods take the function to be executen from a dictionaty,
+            check if is implemented in the class, and then run it
+
+        :param execution_parameters: dictionary that containg the fucntion to be executed and
+        the execution parameters
+        :type execution_parameters: dict
+        :return: dictionary with the execution results
+        :rtype: dict
+        """
         cls._execution_parameters = execution_parameters
         process_function = execution_parameters.get("process_function")
         assert hasattr(cls,process_function), "you mus provide a correct process function"
@@ -43,12 +51,17 @@ class TimeForecastingManager(Manager):
         
         #::::::...... Load data in Firebase bucket ......::::::
         GeneralLogger.put_log("* Performing loading process")
-        remote_path = f"{FIREBASE_FORECASTING_FOLDER}/test_cluster_name.csv"
-        TimeForecastingLoader.Load_file_in_bucket(model_data, remote_path=remote_path)
+
+        params = {
+            "remote_path": "testing_folder/test_file.csv",
+            "data": model_data
+        }
+        TimeForecastingLoader.save_data_in_firebase_bucket_from("dataframe",**params)
+        
         
         result = {
             "success": True,
-            "model_path": remote_path
+            "model_path": params.get("remote_path")
         }
         return result
         

@@ -40,9 +40,11 @@ DB_CONFIGS = {
 # ::::::....... Firebase storage service connection configs ......::::::
 FIREBASE_FORECASTING_FOLDER = "forecasting_models"
 FIREBASE_CONFIGS = {
-    "interperia-test": {"credentials_name": "FIREBASE_INTERPERIA"}
+    "interperia-test": {
+        "keys_path": "config/firebase_keys/interperia-test.json",
+        "bucket_name": "interperia-test.appspot.com"
+        }
 }
-
 
 # ::::::....... Firebase storage service connection configs ......::::::
 ANALYTIC_PROCESSOR = {"run_forecasting"}
