@@ -19,6 +19,10 @@ class ApiRestManager:
              
     @classmethod
     def _setup_router(cls) -> APIRouter:
+        """ Put in this class all the enpoints parameters defines in the class AnalyticEndPoints
+        :return: router object with the analitic endpoints
+        :rtype: APIRouter
+        """
         GeneralLogger.put_log("* Adding all endpoints to a router class")
         router = APIRouter()
         router.add_api_route(**AnalyticEndPoints.get_index_endpoint())

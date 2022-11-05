@@ -1,7 +1,7 @@
 from pandas import DataFrame
 from modules.logs.loggers import GeneralLogger
 
-class TimeForecastingTrainer:
+class ForecastingTrainer:
 
     @classmethod
     def DummyTraining(cls, data: DataFrame) -> DataFrame:

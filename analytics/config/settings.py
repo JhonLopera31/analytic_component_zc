@@ -46,5 +46,6 @@ FIREBASE_CONFIGS = {
         }
 }
 
+
 # ::::::....... Firebase storage service connection configs ......::::::
 ANALYTIC_PROCESSOR = {"run_forecasting"}

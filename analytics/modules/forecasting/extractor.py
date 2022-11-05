@@ -4,7 +4,7 @@ from modules.logs.loggers import GeneralLogger
 from modules.repository.db_manager import DBManager
 
 
-class TimeForecastingExtractor:
+class ForecastingExtractor:
     
     _training_data: DataFrame = None
     

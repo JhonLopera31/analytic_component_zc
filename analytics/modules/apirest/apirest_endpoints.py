@@ -63,7 +63,6 @@ class AnalyticEndPoints:
         :rtype: dict
         """
         # TODO: use etl method to get data from mysql database (try to get data by day and group bu hour)
-        # TODO: Create methods to get the data directly from a mongo db database
         # TODO: Build a class to create the predictive models
         pass
 
