@@ -39,15 +39,20 @@ class TimeForecastingManager(Manager):
         :rtype: str
         """
         try:
+            look_back = 30
+            GeneralLogger.put_log("* Setting neuronal network")
+            ForecastingTrainer.setup_neuronal_network(look_back=look_back)
+            
             GeneralLogger.put_log("* Performing data extraction process")
             json_content = cls._execution_parameters.get("json_content")
             training_data = ForecastingExtractor.extract_training_data(json_content)
 
             GeneralLogger.put_log("* Performing data transformation process")
-            training_data = ForecastingTransformer.DummyTransformation(training_data)
+            training_data = ForecastingTransformer.preprocessing(training_data, 30, 0.8)
 
             GeneralLogger.put_log("* Performing training process")
-            trainig_model = ForecastingTrainer.DummyTraining(training_data)
+            trainig_result = ForecastingTrainer.fit_model(training_data,epochs=100)
+
 
             #::::::......::: Load data in Firebase bucket :::......::::::
             GeneralLogger.put_log("* Performing loading process")
@@ -55,9 +60,8 @@ class TimeForecastingManager(Manager):
             params = {
                 "firebase_folder": "forecasting_models",
                 "file_name": f"{json_content.get('id')}_training_model.csv",
-                "data": trainig_model,
+                "data": trainig_result,
             }
-            print(trainig_model)
             result = ForecastingLoader.save_data_in_bucket("dataframe", params)
 
             return result
