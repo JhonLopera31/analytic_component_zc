@@ -1,10 +1,9 @@
 from interfaces.manager import Manager
 from modules.logs.loggers import GeneralLogger
 from modules.forecasting.extractor import ForecastingExtractor
-from modules.forecasting.transformer import ForecastingTransformer
 from modules.forecasting.trainer import ForecastingTrainer
 from modules.forecasting.loader import ForecastingLoader
-
+from pandas import read_csv
 
 class TimeForecastingManager(Manager):
 
@@ -39,19 +38,25 @@ class TimeForecastingManager(Manager):
         :rtype: str
         """
         try:
-            look_back = 30
-            GeneralLogger.put_log("* Setting neuronal network")
-            ForecastingTrainer.setup_neuronal_network(look_back=look_back)
+            look_back = 10
+            units = 50
+            training_size = 0.8
+            epochs = 50
+            batch_size = 30
             
-            GeneralLogger.put_log("* Performing data extraction process")
+            GeneralLogger.put_log("* Extracting data from json ")
             json_content = cls._execution_parameters.get("json_content")
-            training_data = ForecastingExtractor.extract_training_data(json_content)
+            data = ForecastingExtractor.extract_training_data(json_content)
+            data = read_csv('/Users/andersonlopera/Desktop/LSTM/airline-passengers.csv', usecols=[1], engine='python')
+            
+            GeneralLogger.put_log("* Preprocesing data")
+            training_data = ForecastingTrainer.preprocessing(data, look_back, training_size)
 
-            GeneralLogger.put_log("* Performing data transformation process")
-            training_data = ForecastingTransformer.preprocessing(training_data, 30, 0.8)
+            GeneralLogger.put_log("* Setting neuronal network")
+            ForecastingTrainer.setup_lstm_neuronal_network(units, look_back)
 
             GeneralLogger.put_log("* Performing training process")
-            trainig_result = ForecastingTrainer.fit_model(training_data,epochs=100)
+            trainig_result = ForecastingTrainer.fit_model(training_data, epochs, batch_size)
 
 
             #::::::......::: Load data in Firebase bucket :::......::::::
@@ -64,7 +69,7 @@ class TimeForecastingManager(Manager):
             }
             result = ForecastingLoader.save_data_in_bucket("dataframe", params)
 
-            return result
+            return {"test": "test"}
 
         except Exception as e:
-            return e
+            return {"result": str(e)}
