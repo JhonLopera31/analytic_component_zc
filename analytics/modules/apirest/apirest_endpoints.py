@@ -69,7 +69,10 @@ class AnalyticEndPoints:
     # ::::::......:::::: Getter Methods ::::::......::::::
     @classmethod
     def get_index_endpoint(cls):
-        params = {"path": "/", "endpoint": cls._index_endpoint, "methods": ["GET"]}
+        params = {
+            "path": "/", 
+            "endpoint": cls._index_endpoint,
+            "methods": ["GET"]}
         return params
 
     @classmethod
