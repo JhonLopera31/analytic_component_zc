@@ -6,7 +6,7 @@ from pandas import DataFrame
 from numpy import reshape, array
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-from numpy import sqrt
+from numpy import sqrt, arange
 
 
 class ForecastingTrainer:
@@ -75,7 +75,7 @@ class ForecastingTrainer:
         }
 
     @classmethod
-    def fit_model(cls, data: dict, epochs: int, batch_size: int, verbose=False) -> dict:
+    def fit_model(cls, data: dict, epochs: int, batch_size: int, verbose=0) -> dict:
         """_summary_
 
         :param model: _description_
@@ -95,7 +95,7 @@ class ForecastingTrainer:
             batch_size=batch_size,
             validation_data=(data.get("test_dataset").get("x"), data.get("test_dataset").get("y")),
             callbacks=[EarlyStopping(monitor="val_loss", patience=10)],
-            verbose=0,
+            verbose=verbose,
             shuffle=False,
         )
 
@@ -110,6 +110,7 @@ class ForecastingTrainer:
             "result": "success",
             "history": history,
             "rmse": cls._get_rsme(data),
+            "mse": history.history['mse'][-1],
             "train_predict": train_predict,
             "test_predict": test_predict
         }
@@ -123,9 +124,15 @@ class ForecastingTrainer:
 
     @classmethod
     def _get_rsme(cls, data) -> dict:
+        """_summary_
+
+        :param data: _description_
+        :type data: _type_
+        :return: _description_
+        :rtype: dict
+        """
 
         train_predict = cls._model.predict(data.get("training_dataset").get("x"))
-        print(type(train_predict))
         test_predict = cls._model.predict(data.get("test_dataset").get("x"))
 
         # invert predictions
@@ -138,16 +145,35 @@ class ForecastingTrainer:
             "train_score": sqrt(mean_squared_error(train_y[0], train_predict[:,0])),
             "test_score": sqrt(mean_squared_error(test_y[0], test_predict[:,0]))
         }
-        print(scores) 
-        
-        return {
-            "train_score": sqrt(mean_squared_error(train_y[0], train_predict[:,0])),
-            "test_score": sqrt(mean_squared_error(test_y[0], test_predict[:,0]))
-        }
+        print(scores)
+        return scores
         
     @classmethod
-    def plot_result(cls):
-        pass
+    def plot_result(cls, original_data, prediction_data, look_back, training_size):
+        original_data = original_data.values.astype('float32')
+        train_size = int(len(original_data) * training_size)
+        original_data_train = original_data[0:train_size,:]
+        original_data_test = original_data[train_size:len(original_data),:]
+        
+        training_x_axis = arange(0, len(original_data_train),1)
+        test_x_axis = arange(0, len(original_data_test),1)
+
+        plt.figure(figsize=(20,10))
+        plt.subplot(1,2,1)
+        plt.title("Training data")
+        plt.plot (prediction_data.get("train_predict"),"o--", label = "Prediction")
+        plt.plot(training_x_axis-(look_back-1),original_data_train,"x--", label = "original")
+        plt.legend()
+        plt.grid()
+        
+        plt.subplot(1,2,2)
+        plt.title("Test data")
+        plt.plot (prediction_data.get("test_predict"),"o--", label = "Prediction")
+        plt.plot(test_x_axis-(look_back-1),original_data_test,"x--", label = "Original")
+        plt.legend()
+        plt.grid()
+        
+        plt.show()
 
     @staticmethod
     def _convert_to_matrix(dataset, look_back=1):

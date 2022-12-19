@@ -12,9 +12,5 @@ class GeneralLogger:
         cls._logger = getLogger(log_stream_name)
 
     @classmethod
-    def get_logger(cls):
-        return cls._logger
-
-    @classmethod
     def put_log(cls, msg: str):
         cls._logger.info(msg)
